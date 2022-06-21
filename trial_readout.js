@@ -19,13 +19,14 @@ let t_FrqoReadout2 = document.getElementById('tFRQo1');
 let t_FrqrReadout2 = document.getElementById('tFRQr1');
 let t_CrsReadout = document.getElementById('tCrs1');
 let t_SsReadout = document.getElementById('tss');
+/*
 let exBrgReadout = document.getElementById('texbrg');
 let expRngReadout0 = document.getElementById('trng1');
 let expRngReadout1 = document.getElementById('trng2');
 let expRngReadout2 = document.getElementById('trng3');
 let expBrgRateReadout = [document.getElementById('tbrgRate1'), document.getElementById('tbrgRate2'), document.getElementById('tbrgRate3')];
 let expBrgXingReadout = [document.getElementById('tbrgXing1'), document.getElementById('tbrgXing2'), document.getElementById('tbrgXing3')];
-
+*/
 class OwnShip {
     constructor() {
         this.crs = 0;
