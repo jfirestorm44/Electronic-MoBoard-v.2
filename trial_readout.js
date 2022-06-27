@@ -25,6 +25,8 @@ let t_expRngReadout1 = document.getElementById('trng2');
 let t_expRngReadout2 = document.getElementById('trng3');
 let t_expBrgRateReadout = [document.getElementById('tbrgRate1'), document.getElementById('tbrgRate2'), document.getElementById('tbrgRate3')];
 let t_expBrgXingReadout = [document.getElementById('tbrgXing1'), document.getElementById('tbrgXing2'), document.getElementById('tbrgXing3')];
+let t_spdTiReadout = document.getElementById('spdti');
+let t_crsSpdTiReadout = document.getElementById('crsSpdti');
 
 class OwnShip {
     constructor() {
@@ -77,22 +79,22 @@ class TrialTarget {
     }
 }
 
-let trialOS = new OwnShip()
+let tOS = new OwnShip()
 let tTarget = new TrialTarget()
 
 function updateTrialReadout() {
-    trialOS.update()
+    tOS.update()
     tTarget.update()
     t_losReadout.value = tTarget.brg.toFixed(1);
     t_tboReadout.value = tTarget.tbo.toFixed(1);
-    t_osCrsReadout.value = trialOS.crs.toFixed(1);
+    t_osCrsReadout.value = tOS.crs.toFixed(1);
     t_tgtCrsReadout.value = tTarget.crs.toFixed(1);
-    t_spdoReadout.value = trialOS.spd.toFixed(2);
+    t_spdoReadout.value = tOS.spd.toFixed(2);
     t_spdtReadout.value = tTarget.spd.toFixed(2);
     t_aobReadout.value = tTarget.lla.toFixed(1);
-    t_llaReadout.value = trialOS.lla.toFixed(1);
-    t_soaReadout.value = Math.abs(trialOS.sa).toFixed(3);
-    t_soiReadout.value = trialOS.si.toFixed(3);
+    t_llaReadout.value = tOS.lla.toFixed(1);
+    t_soaReadout.value = Math.abs(tOS.sa).toFixed(3);
+    t_soiReadout.value = tOS.si.toFixed(3);
     t_staReadout.value = Math.abs(tTarget.sa).toFixed(3);
     t_stiReadout.value = tTarget.si.toFixed(3);
     t_sraReadout.value = calcTrialSra().toFixed(3);
@@ -100,14 +102,14 @@ function updateTrialReadout() {
 }
 
 function calcTrialSra() {
-    if (determineLeadLag(tTarget.brg, trialOS, tTarget)) {
-        return Math.abs(Math.abs(trialOS.sa) - Math.abs(tTarget.sa));
+    if (determineLeadLag(tTarget.brg, tOS, tTarget)) {
+        return Math.abs(Math.abs(tOS.sa) - Math.abs(tTarget.sa));
     }
-    return Math.abs(Math.abs(trialOS.sa) + Math.abs(tTarget.sa));
+    return Math.abs(Math.abs(tOS.sa) + Math.abs(tTarget.sa));
 }
 
 function calcTrialSri() {
-    return trialOS.si + tTarget.si;
+    return tOS.si + tTarget.si;
 }
 
 t_losReadout.addEventListener('keydown', e => {
@@ -122,14 +124,14 @@ t_losReadout.addEventListener('keydown', e => {
 
 t_osCrsReadout.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
-        trialOS.crs = Number(t_osCrsReadout.value);
+        tOS.crs = Number(t_osCrsReadout.value);
         updateTrialReadout();
     }
 })
 
 t_spdoReadout.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
-        trialOS.spd = Number(t_spdoReadout.value);
+        tOS.spd = Number(t_spdoReadout.value);
         updateTrialReadout();
     }
 })
@@ -150,7 +152,7 @@ t_tgtCrsReadout.addEventListener('keydown', e => {
 
 t_FrqrReadout.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
-        t_FrqcReadout.value = calcFRQc(Number(t_FrqrReadout.value), Number(t_SsReadout.value), trialOS);
+        t_FrqcReadout.value = calcFRQc(Number(t_FrqrReadout.value), Number(t_SsReadout.value), tOS);
         t_FrqoReadout.value = calcFRQo(Number(t_FrqcReadout.value), Number(t_SsReadout.value), tTarget);
         updateReadout();
     }
@@ -165,7 +167,7 @@ t_FrqoReadout2.addEventListener('keydown', e => {
 
 t_FrqrReadout2.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
-        CrsReadout.value = calcCrsFromFo(Number(t_FrqrReadout2.value), Number(t_SsReadout.value), Number(t_FrqoReadout2.value))
+        t_CrsReadout.value = calcCrsFromFo(Number(t_FrqrReadout2.value), Number(t_SsReadout.value), Number(t_FrqoReadout2.value))
     }
 })
 
@@ -178,23 +180,29 @@ t_exBrgReadout.addEventListener('keydown', e => {
 t_expRngReadout0.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         tTarget.exRng[0] = Number(t_expRngReadout0.value);
-        t_expBrgRateReadout[0].value = calcExpectedBrgRate(tTarget.exRng[0], 0, trialOS, tTarget, Number(t_exBrgReadout.value));
-        t_expBrgXingReadout[0].value = calcExpectedBrgXing(0, trialOS, tTarget, Number(t_exBrgReadout.value))
+        t_expBrgRateReadout[0].value = calcExpectedBrgRate(tTarget.exRng[0], 0, tOS, tTarget, Number(t_exBrgReadout.value));
+        t_expBrgXingReadout[0].value = calcExpectedBrgXing(0, tOS, tTarget, Number(t_exBrgReadout.value))
     }
 })
 
 t_expRngReadout1.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         tTarget.exRng[1] = Number(t_expRngReadout1.value);
-        t_expBrgRateReadout[1].value = calcExpectedBrgRate(tTarget.exRng[1], 1, trialOS, tTarget, Number(t_exBrgReadout.value));
-        t_expBrgXingReadout[1].value = calcExpectedBrgXing(1, trialOS, tTarget, Number(t_exBrgReadout.value))
+        t_expBrgRateReadout[1].value = calcExpectedBrgRate(tTarget.exRng[1], 1, tOS, tTarget, Number(t_exBrgReadout.value));
+        t_expBrgXingReadout[1].value = calcExpectedBrgXing(1, tOS, tTarget, Number(t_exBrgReadout.value))
     }
 })
 
 t_expRngReadout2.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         tTarget.exRng[2] = Number(t_expRngReadout2.value);
-        t_expBrgRateReadout[2].value = calcExpectedBrgRate(tTarget.exRng[2], 2, trialOS, tTarget, Number(t_exBrgReadout.value));
-        t_expBrgXingReadout[2].value = calcExpectedBrgXing(2, trialOS, tTarget, Number(t_exBrgReadout.value))
+        t_expBrgRateReadout[2].value = calcExpectedBrgRate(tTarget.exRng[2], 2, tOS, tTarget, Number(t_exBrgReadout.value));
+        t_expBrgXingReadout[2].value = calcExpectedBrgXing(2, tOS, tTarget, Number(t_exBrgReadout.value))
+    }
+})
+
+t_spdTiReadout.addEventListener('keydown', e => {
+    if (e.code == 'Enter' || e.code === 'Tab') {
+        t_crsSpdTiReadout.value = calcCrsFromSPDti(Number(t_tboReadout.value), Number(t_spdTiReadout.value), Number(t_spdtReadout.value))
     }
 })

@@ -116,18 +116,15 @@ function exSa(brg, vec) {
 
 function exSra(osVec, tgtVec, brg) {
     if (determineLeadLag(brg, osVec, tgtVec)) {
-        console.log(Math.abs(exSa(brg, osVec) - exSa(brg, tgtVec)))
         return Math.abs(exSa(brg, osVec) - exSa(brg, tgtVec));
     }
-    console.log(Math.abs(exSa(brg, osVec) + exSa(brg, tgtVec)))
     return Math.abs(exSa(brg, osVec) + exSa(brg, tgtVec));
 }
 
 function calcExpectedBrgRate(val, num, osVec, tgtVec, brg) {
-    console.log(brg)
     let sra = exSra(osVec, tgtVec, brg);
     let b = sra * (0.95 / val);
-    tgtVec.exBrgR[num] = b; 
+    tgtVec.exBrgR[num] = b;
     return b.toFixed(3);
 }
 
@@ -161,11 +158,19 @@ function calcFRQo(fc, ss, vec) {
 }
 
 function calcCrsFromFo(fr, ss, fo) {
-    let frqc = calcFRQc(fr, ss, trialOS);
+    let frqc = calcFRQc(fr, ss, tOS);
     let rad = Math.acos(((frqc - fo) * ss) * tTarget.spd);
     let crs1 = Math.abs(tTarget.tbo - radiansToDegrees(rad));
     let crs2 = Math.abs(tTarget.tbo + radiansToDegrees(rad));
     return crs1.toFixed(0) + "/" + crs2.toFixed(0)
+}
+
+function calcCrsFromSPDti(brg, spdti, spd) {
+    let crs1 = radiansToDegrees(Math.acos(spdti / spd)) - brg
+    let crs2 = radiansToDegrees(Math.acos(spdti / spd)) + brg
+    if (crs1 > 360) crs1 -= 360
+    if (crs2 > 360) crs2 -= 360
+    return Math.abs(crs1.toFixed(0)) + '/' + Math.abs(crs2.toFixed(0))
 }
 
 function determineLeadLag(brg, os, tgt) {

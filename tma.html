@@ -23,6 +23,19 @@
         </div>
         <div id="dataWrapper">
             <div id="solutionWrapper">
+                <div id="ctcSelectWrapper">
+                    <div>
+                        <lable for="ctcInput">Add CtC #</lable>
+                        <input type="text" id="ctcInput" name="ctcInput" class="input_boxes">
+                    </div>
+                    <div>
+                        <lable for="ctcSelect">Contacts</lable>
+                        <select name="ctcSelect" id="ctcSelect" class="input_boxes"></select>
+                    </div>
+                    <div>
+                        <button type="button" id="removeButton">Remove</button>
+                    </div>
+                </div>
                 <div id="selection">
                     <div>
                         <lable for="plot">Plot</lable>
@@ -217,25 +230,6 @@
                             readonly>
                     </div>
                 </div>
-                <div id="targetSelection">
-                    <div>
-                        <lable for="tgt1">TGT 1</lable>
-                        <input type="radio" name="tgtSelect" id="tgt1" tabindex="-1" checked>
-                    </div>
-                    <div>
-                        <lable for="tgt2">TGT 2</lable>
-                        <input type="radio" name="tgtSelect" id="tgt2" tabindex="-1">
-                    </div>
-                    <div>
-                        <lable for="tgt3">TGT 3</lable>
-                        <input type="radio" name="tgtSelect" id="tgt3" tabindex="-1">
-                    </div>
-                   
-                </div>
-                <div>
-                    <lable for="ctcInput">Contact Number</lable>
-                    <input type="text" id="ctcInput" name="ctcInput" class="input_boxes">
-                </div>
             </div>
             <div id="trialWrapper">
                 <div id="generalData" class="general">
@@ -390,6 +384,17 @@
                             readonly>
                         <input type="text" id="tbrgXing3" name="tbrgXing" class="input_boxes brgXing" tabindex="-1"
                             readonly>
+                    </div>
+                </div>
+                <h3>SPD<sub>ti</sub> > CRS</h3>
+                <div id="spdToCrs">
+                    <div id="spdtiWrapper">
+                        <label for="spdti" class="name-label">SPD<sub>ti</sub></label>
+                        <input type="text" id="spdti" name="spdti" class="input_boxes">
+                    </div>
+                    <div id="crsSpdtiWrapper">
+                        <label for="crsSpdti" class="name-label">CRS</label>
+                        <input type="text" id="crsSpdti" name="crsSpdti" class="input_boxes">
                     </div>
                 </div>
             </div>

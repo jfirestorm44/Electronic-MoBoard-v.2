@@ -20,9 +20,6 @@ let tbo = {
 let showOS = document.getElementById('os');
 let showTGT = document.getElementById('tgt');
 let lockButton = document.getElementById('lock');
-let tgt1 = document.getElementById('tgt1');
-let tgt2 = document.getElementById('tgt2');
-let tgt3 = document.getElementById('tgt3');
 let soundSpeed = 0;
 let frqr = 0;
 let zeroReferenceOpp = {
@@ -33,7 +30,6 @@ let vectorSelect = 0;
 let interval = 1000 * 60;
 let expected = Date.now() + interval;
 plot.checked = 'checked';
-tgt1.checked = 'checked';
 
 class Moboard {
     constructor() {
@@ -110,14 +106,14 @@ class Moboard {
 let moboard = new Moboard()
 
 class Vector {
-    constructor(x, y, c, v, num) {
+    constructor(c, v) {
         this.pt1 = {
             x: canvas.width / 2,
             y: canvas.height / 2
         };
         this.pt2 = {
-            x: x,
-            y: y
+            x: 300,
+            y: 300
         };
         this.color = c;
         this.crs = 0;
@@ -127,7 +123,6 @@ class Vector {
         this.sa = 0;
         this.vNum = v;
         this.srm = 0;
-        this.num = num;
     }
     draw() {
         ctx.setLineDash([]);
@@ -195,7 +190,7 @@ class Vector {
             tbo = brg <= 180 ? brg + 180 : brg - 180
             this.vNum === 1 ? a = degreesToRadians(brg - this.crs) : a = degreesToRadians(tbo - this.crs);
         } else {
-            this.vNum === 1 ? a = degreesToRadians(target[vectorSelect].currentBrg - this.crs) : a = degreesToRadians(target[vectorSelect].tbo - this.crs);
+            if (target.length > 0) this.vNum === 1 ? a = degreesToRadians(target[vectorSelect].currentBrg - this.crs) : a = degreesToRadians(target[vectorSelect].tbo - this.crs);
         }
         this.si = Math.cos(a) * this.spd;
         this.sa = Math.sin(a) * this.spd;
@@ -221,21 +216,21 @@ class Vector {
             }
         }
         if (plot.checked) this.calcLla();
-        if (cpa.checked) this.calcLlaCpa();
+        if (cpa.checked && target.length > 0) this.calcLlaCpa();
         this.calcSiSa();
         this.SRM();
     }
-
 }
-let vector = new Vector(389, 389, 'blue', 1);
-let tgtVector = [new Vector(300, 550, 'red', 2), new Vector(500, 550, 'rgb(52, 156, 0)', 2), new Vector(450, 450, 'rgb(237, 131, 2)', 2)]
+let vector = new Vector('blue', 1);
+let tgtVector = []
 
 class Target {
-    constructor(b, c, num) {
+    constructor(b, c, num, cNum) {
         this.x = 0;
         this.y = 0;
         this.c = c;
         this.num = num;
+        this.cNum = cNum;
         this.rng = 50;
         this.brg = b;
         this.crs = tgtVector[vectorSelect].crs;
@@ -244,7 +239,7 @@ class Target {
         this.exBrgR = [0, 0, 0];
         this.exBrgX = [0, 0, 0];
         this.currentBrg = 0;
-        this.tbo = this.currentBrg <= 180 ? this.currentBrg + 180 : this.currentBrg - 180; //here
+        this.tbo = this.currentBrg <= 180 ? this.currentBrg + 180 : this.currentBrg - 180;
         this.currentRng = 0;
         this.srm = 0;
         this.frqr = 0;
@@ -266,6 +261,9 @@ class Target {
             ctx.moveTo(this.x, this.y)
             ctx.lineTo(this.x + 20 * Math.cos(degreesToRadians(this.crs - 90)), this.y + 20 * Math.sin(degreesToRadians(this.crs - 90)));
             ctx.stroke();
+            ctx.fillStyle = this.c;
+            ctx.textAlign = 'center';
+            ctx.fillText(this.cNum, this.x, this.y + 30)
         } else {
             let a = degreesToRadians(this.currentBrg - 90);
             let x = canvas.width / 2 + 400 * Math.cos(a);
@@ -290,11 +288,6 @@ class Target {
         let a = degreesToRadians(this.brg - 90);
         this.x = canvas.width / 2 + l * Math.cos(a);
         this.y = canvas.height / 2 + l * Math.sin(a);
-        let pt1 = {
-            x: this.x,
-            y: this.y
-        }
-        let pt2;
         let t = this.timeLate / 60;
         if (this.timeLate > 0) {
             let d = 5 * (this.spd * t);
@@ -303,8 +296,14 @@ class Target {
                 a = tgtVector[0].srm - degreesToRadians(90);
             } else if (this.num === 1) {
                 a = tgtVector[1].srm - degreesToRadians(90);
-            } else {
+            } else if (this.num === 2) {
                 a = tgtVector[2].srm - degreesToRadians(90);
+            } else if (this.num === 3) {
+                a = tgtVector[3].srm - degreesToRadians(90);
+            } else if (this.num === 4) {
+                a = tgtVector[4].srm - degreesToRadians(90);
+            } else if (this.num === 5) {
+                a = tgtVector[5].srm - degreesToRadians(90);
             }
             let x = this.x;
             let y = this.y;
@@ -320,8 +319,14 @@ class Target {
             a = tgtVector[0].srm - degreesToRadians(90);
         } else if (this.num === 1) {
             a = tgtVector[1].srm - degreesToRadians(90);
-        } else {
+        } else if (this.num === 2) {
             a = tgtVector[2].srm - degreesToRadians(90);
+        } else if (this.num === 3) {
+            a = tgtVector[3].srm - degreesToRadians(90);
+        } else if (this.num === 4) {
+            a = tgtVector[4].srm - degreesToRadians(90);
+        } else if (this.num === 5) {
+            a = tgtVector[5].srm - degreesToRadians(90);
         }
         let x = this.x;
         let y = this.y;
@@ -357,7 +362,8 @@ class Target {
         this.currentRng = dist.toFixed(1);
     }
 }
-let target = [new Target(345, 'red', 0), new Target(0, 'rgb(52, 156, 0)', 1), new Target(15, 'rgb(237, 131, 2)', 2)]
+//let target = [new Target(345, 'red', 0), new Target(0, 'rgb(52, 156, 0)', 1), new Target(15, 'rgb(237, 131, 2)', 2)]
+let target = []
 
 function drawLOS(brg) {
     los.x = (canvas.width / 2 + Math.cos((-90) * Math.PI / 180) * canvas.width / 2);
@@ -423,7 +429,7 @@ function drawDRM() {
     ctx.stroke();
     //position = sign((Bx - Ax) * (Y - Ay) - (By - Ay) * (X - Ax))
     let check = Math.sign((x3 - c.x) * (target[vectorSelect].y - c.y) - (y3 - c.y) * (target[vectorSelect].x - c.x));
-    calcCPA(check)
+    if (target.length > 0) calcCPA(check)
 }
 
 canvas.addEventListener("mousemove", e => {
@@ -454,48 +460,8 @@ showTGT.addEventListener('change', () => {
 })
 
 lockButton.addEventListener('change', () => {
-    setReadout()
+    if (tgtVector.length > 0) setReadout()
 })
-
-tgt1.addEventListener('change', () => {
-    vectorSelect = 0;
-    target[vectorSelect].updateExpecteds()
-    updateReadout()
-    if (plot.checked) {
-        updateReadout()
-        drawPlot();
-    } else {
-        updateReadout()
-        drawCPA();
-    }
-
-});
-
-tgt2.addEventListener('change', () => {
-    vectorSelect = 1;
-    target[vectorSelect].updateExpecteds()
-    updateReadout()
-    if (plot.checked) {
-        drawPlot();
-        updateReadout()
-    } else {
-        drawCPA();
-        updateReadout()
-    }
-});
-
-tgt3.addEventListener('change', () => {
-    vectorSelect = 2;
-    target[vectorSelect].updateExpecteds()
-    updateReadout()
-    if (plot.checked) {
-        updateReadout()
-        drawPlot();
-    } else {
-        updateReadout()
-        drawCPA();
-    }
-});
 
 function degreesToRadians(deg) {
     return deg * Math.PI / 180;
@@ -513,15 +479,15 @@ function drawPlot() {
     moboard.numbers();
     moboard.draw();
     vector.update();
-    tgtVector[vectorSelect].update();
-    target[vectorSelect].update();
+    if (tgtVector[vectorSelect]) tgtVector[vectorSelect].update();
+    if (target[vectorSelect]) target[vectorSelect].update();
     if (showOS.checked) {
         vector.draw();
         drawOpenCloseLine();
         drawLeftRight();
     }
     if (showTGT.checked) {
-        tgtVector[vectorSelect].draw();
+        if (tgtVector[vectorSelect]) tgtVector[vectorSelect].draw();
     }
 }
 
@@ -532,18 +498,19 @@ function drawCPA() {
     moboard.numbers();
     moboard.draw();
     vector.update();
-    tgtVector[vectorSelect].update();
-    target[vectorSelect].update();
-    target[0].draw();
-    target[1].draw();
-    target[2].draw();
-    drawSRM();
-    if (target[vectorSelect].rng < 80.1) drawDRM();
+    if (target.length > 0) tgtVector[vectorSelect].update();
+    if (target.length > 0) target[vectorSelect].update();
+    for (let i = 0; i < target.length; i++) {
+        target[i].draw();
+    }
+    if (target.length > 0 && (showOS.checked && showTGT.checked)) drawSRM();
+    if (target.length > 0)
+        if (target[vectorSelect].rng <= 80) drawDRM();
     if (showOS.checked) {
         vector.draw();
     }
     if (showTGT.checked) {
-        tgtVector[vectorSelect].draw()
+        if (target.length > 0) tgtVector[vectorSelect].draw()
     }
 }
 
@@ -552,30 +519,26 @@ function step() {
     if (dt > interval) {
         expected += dt;
     }
-    target[0].updatePosition();
-    target[1].updatePosition();
-    target[2].updatePosition();
+    for (let i = 0; i < target.length; i++) {
+        target[i].updatePosition();
+    }
     if (cpa.checked) {
         drawCPA();
-
     }
-    updateReadout(); //here
+    updateReadout();
     expected += interval;
     setTimeout(step, Math.max(0, interval - dt));
 }
 setTimeout(step, interval);
 
 function load() {
-    target[0].setPosition();
-    target[1].setPosition();
-    target[2].setPosition();
     drawPlot();
     setReadout();
     updateReadout();
 }
 
 function animate() {
-    updateReadout()
+    if (tgtVector.length > 0) updateReadout()
     if (plot.checked) {
         drawPlot();
     }

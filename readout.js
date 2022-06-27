@@ -1,3 +1,6 @@
+let ctcInput = document.getElementById('ctcInput');
+let ctcSelect = document.getElementById('ctcSelect');
+let removeButton = document.getElementById('removeButton');
 let losReadout = document.getElementById('los');
 let tboReadout = document.getElementById('tbo');
 let osCrsReadout = document.getElementById('CRSo');
@@ -30,6 +33,66 @@ let expBrgXingReadout = [document.getElementById('brgXing1'), document.getElemen
 let currentBrg = document.getElementById('currentBrg');
 let currentRng = document.getElementById('currentRng');
 let timeLate = document.getElementById('timeLate');
+let options = document.getElementsByTagName('option')
+let colors = ['red', 'orange', 'yellow', 'green', 'lightblue', 'lightgreen']
+
+ctcInput.addEventListener("keydown", e => {
+    if (isNaN(ctcInput.value) || ctcInput.value.length != 4) return
+    if (e.code == 'Enter' || e.code === 'Tab') {
+        addCtc(Number(ctcInput.value));
+    }
+})
+
+removeButton.addEventListener('click', () => {
+    let i = ctcSelect.selectedIndex;
+    let o = ctcSelect.options[i];
+    o.remove();
+    target.splice(i, 1);
+    tgtVector.splice(i, 1);
+    vectorSelect = 0;
+    target.forEach((el, j) => el.num = j);
+    updateReadout()
+    if (plot.checked) {
+        drawPlot();
+    } else {
+        drawCPA();
+    }
+})
+
+ctcSelect.addEventListener('change', e => {
+    let i = ctcSelect.selectedIndex;
+    vectorSelect = i;
+    target[vectorSelect].updateExpecteds();
+    updateReadout()
+    if (plot.checked) {
+        drawPlot();
+    } else {
+        drawCPA();
+    }
+})
+
+function addCtc(ctcNum) {
+    if (ctcSelect.length >= 6) return
+    for (let i = 0; i < options.length; i++) {
+        if (ctcNum == options[i].value) {
+            return
+        }
+    }
+    let num = options.length;
+    let option = new Option(ctcNum + '', ctcNum);
+    ctcSelect.add(option, undefined);
+    let c = target.length === 0 ? [
+        ['red']
+    ] : colors.filter(c => target.every(t => c != t.c));
+    tgtVector.push(new Vector(c[0], 0));
+    target.push(new Target(0, c[0], num, ctcNum));
+    target[num].setPosition();
+    if (plot.checked) {
+        drawPlot();
+    } else {
+        drawCPA();
+    }
+}
 
 function setReadout() {
     if (cpa.checked) {
@@ -38,7 +101,6 @@ function setReadout() {
         losReadout.setAttribute('readonly', 'readonly');
         losReadout.style.color = "black";
         if (lockButton.checked) {
-            console.log(true)
             cpaTgtBrgReadout.setAttribute('readonly', 'readonly');
             cpaRngReadout.setAttribute('readonly', 'readonly');
             cpaTgtBrgReadout.style.color = "black";
@@ -57,7 +119,7 @@ function setReadout() {
         updateReadout()
     }
     if (plot.checked) {
-        losReadout.value = target[vectorSelect].currentBrg;
+        if (target.length > 0) losReadout.value = target[vectorSelect].currentBrg;
         brg = Number(losReadout.value);
         losReadout.removeAttribute('readonly');
         losReadout.style.color = "white";
@@ -74,31 +136,34 @@ function setReadout() {
 
 function updateReadout() {
     vector.setSpeed();
-    tgtVector[vectorSelect].setSpeed();
-    aobReadout.value = tgtVector[vectorSelect].lla.toFixed(1);
+    if (target.length > 0) tgtVector[vectorSelect].setSpeed();
+    if (target.length > 0) aobReadout.value = tgtVector[vectorSelect].lla.toFixed(1);
     losReadout.value = brg.toFixed(1);
     if (plot.checked) tboReadout.value = brg <= 180 ? brg + 180 : brg - 180;
-    if (cpa.checked) tboReadout.value = Number(target[vectorSelect].tbo).toFixed(1);
+    if (target.length > 0)
+        if (cpa.checked) tboReadout.value = Number(target[vectorSelect].tbo).toFixed(1);
     osCrsReadout.value = vector.crs.toFixed(1);
-    tgtCrsReadout.value = tgtVector[vectorSelect].crs.toFixed(1);
+    if (target.length > 0) tgtCrsReadout.value = tgtVector[vectorSelect].crs.toFixed(1);
     llaReadout.value = vector.lla.toFixed(1);
     spdoReadout.value = vector.spd.toFixed(2);
-    spdtReadout.value = tgtVector[vectorSelect].spd.toFixed(2);
+    if (target.length > 0) spdtReadout.value = tgtVector[vectorSelect].spd.toFixed(2);
     soiReadout.value = vector.si.toFixed(3);
-    stiReadout.value = tgtVector[vectorSelect].si.toFixed(3);
+    if (target.length > 0) stiReadout.value = tgtVector[vectorSelect].si.toFixed(3);
     soaReadout.value = Math.abs(vector.sa.toFixed(3));
-    staReadout.value = Math.abs(tgtVector[vectorSelect].sa.toFixed(3));
-    sriReadout.value = calcSri().toFixed(2);
-    sraReadout.value = calcSra().toFixed(2);
-    cpaTgtBrgReadout.value = target[vectorSelect].brg.toFixed(1);
-    cpaRngReadout.value = target[vectorSelect].rng.toFixed(2);
-    currentRng.value = target[vectorSelect].currentRng;
-    currentBrg.value = target[vectorSelect].currentBrg;
-    timeLate.value = target[vectorSelect].timeLate;
-    frqrReadout.value = target[vectorSelect].frqr;
-    frqcReadout.value = target[vectorSelect].frqc;
-    frqoReadout.value = target[vectorSelect].frqo;
-    ssReadout.value = target[vectorSelect].ss;
+    if (target.length > 0) staReadout.value = Math.abs(tgtVector[vectorSelect].sa.toFixed(3));
+    if (target.length > 0) sriReadout.value = calcSri().toFixed(2);
+    if (target.length > 0) sraReadout.value = calcSra().toFixed(2);
+    if (target.length > 0) {
+        cpaTgtBrgReadout.value = target[vectorSelect].brg.toFixed(1);
+        cpaRngReadout.value = target[vectorSelect].rng.toFixed(2);
+        currentRng.value = target[vectorSelect].currentRng;
+        currentBrg.value = target[vectorSelect].currentBrg;
+        timeLate.value = target[vectorSelect].timeLate;
+        frqrReadout.value = target[vectorSelect].frqr;
+        frqcReadout.value = target[vectorSelect].frqc;
+        frqoReadout.value = target[vectorSelect].frqo;
+        ssReadout.value = target[vectorSelect].ss;
+    }
 }
 
 losReadout.addEventListener('keydown', e => {

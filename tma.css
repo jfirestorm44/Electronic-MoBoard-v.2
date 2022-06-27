@@ -20,9 +20,24 @@ body {
 
 #buttonWrapper {
     display: flex;
+    align-items: center;
+    justify-content: center;
     width: calc(100% + 40px);
     height: 40px;
     margin: 0;
+}
+
+#removeButton {
+    background-color: #690000;
+    color: white;
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-top: 3px;
+}
+
+#ctcSelect {
+    width: 70px;
+    padding: 0;
 }
 
 #dataWrapper {
@@ -32,6 +47,12 @@ body {
     background-color: #2b2a2b;
     padding: 0 20px 5px 20px;
     border-radius: 0 0 5px 5px;
+}
+
+#ctcSelectWrapper {
+    display: flex;
+    justify-content: space-evenly;
+
 }
 
 #trialWrapper {
@@ -49,7 +70,6 @@ body {
     height: 40px;
     text-align: center;
     border-radius: 10px 10px 0 0;
-    text-align: center;
     line-height: 40px;
     font-family: 'Playfair Display SC';
     font-size: 22px;
@@ -82,7 +102,7 @@ body {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    margin-top: 5px;
+    margin-top: 15px;
     margin-bottom: 5px;
 }
 
@@ -269,4 +289,9 @@ label {
 .brgXing,
 #exbrg {
     margin: 3px;
+}
+
+#spdToCrs {
+    display: flex;
+    justify-content: space-around;
 }
