@@ -176,6 +176,7 @@ frqrReadout.addEventListener('keydown', e => {
 
 //CPA CONTROLS
 cpaTgtBrgReadout.addEventListener('keydown', e => {
+    if (lockButton.checked) return
     if (e.code == 'Enter' || e.code === 'Tab' && cpa.checked) {
         if (cpaTgtBrgReadout.value > 359.9) {
             cpaTgtBrgReadout.value = 0;
@@ -189,6 +190,7 @@ cpaTgtBrgReadout.addEventListener('keydown', e => {
 })
 
 cpaRngReadout.addEventListener('keydown', e => {
+    if (lockButton.checked) return
     if (e.code == 'Enter' || e.code === 'Tab' && cpa.checked) {
         target[vectorSelect].rng = Number(cpaRngReadout.value);
         target[vectorSelect].setPosition();
@@ -199,6 +201,7 @@ cpaRngReadout.addEventListener('keydown', e => {
 })
 
 timeLate.addEventListener('keydown', e => {
+    if (lockButton.checked) return
     if (e.code == 'Enter' || e.code === 'Tab' && cpa.checked) {
         target[vectorSelect].timeLate = Number(timeLate.value)
         target[vectorSelect].setPosition();
@@ -217,21 +220,24 @@ exBrgReadout.addEventListener('keydown', e => {
 expRngReadout0.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         target[vectorSelect].exRng[0] = Number(expRngReadout0.value);
-        calcExpectedBrgRate(target[vectorSelect].exRng[0], 0)
+        expBrgRateReadout[0].value = calcExpectedBrgRate(target[vectorSelect].exRng[0], 0, vector, target[vectorSelect], Number(exBrgReadout.value));
+        expBrgXingReadout[0].value = calcExpectedBrgXing(0, vector, target[vectorSelect], Number(exBrgReadout.value))
     }
 })
 
 expRngReadout1.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         target[vectorSelect].exRng[1] = Number(expRngReadout1.value);
-        calcExpectedBrgRate(target[vectorSelect].exRng[1], 1)
+        expBrgRateReadout[1].value = calcExpectedBrgRate(target[vectorSelect].exRng[1], 1, vector, target[vectorSelect], Number(exBrgReadout.value));
+        expBrgXingReadout[1].value = calcExpectedBrgXing(1, vector, target[vectorSelect], Number(exBrgReadout.value))
     }
 })
 
 expRngReadout2.addEventListener('keydown', e => {
     if (e.code == 'Enter' || e.code === 'Tab') {
         target[vectorSelect].exRng[2] = Number(expRngReadout2.value);
-        calcExpectedBrgRate(target[vectorSelect].exRng[2], 2)
+        expBrgRateReadout[2].value = calcExpectedBrgRate(target[vectorSelect].exRng[2], 2, vector, target[vectorSelect], Number(exBrgReadout.value));
+        expBrgXingReadout[2].value = calcExpectedBrgXing(2, vector, target[vectorSelect], Number(exBrgReadout.value))
     }
 })
 

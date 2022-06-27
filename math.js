@@ -111,35 +111,36 @@ function numToTime(num) {
 }
 
 function exSa(brg, vec) {
-    return Math.abs(Math.sin(degreesToRadians(brg - vec.crs)) * vec.spd)
+    return Math.abs(Math.sin(degreesToRadians(brg - vec.crs)) * vec.spd);
 }
 
-function exSra() {
-    let brg = Number(exBrgReadout.value)
-    if (determineLeadLag(brg, vector, target[vectorSelect])) {
-        return Math.abs(exSa(brg, vector) - exSa(brg, target[vectorSelect]));
+function exSra(osVec, tgtVec, brg) {
+    if (determineLeadLag(brg, osVec, tgtVec)) {
+        console.log(Math.abs(exSa(brg, osVec) - exSa(brg, tgtVec)))
+        return Math.abs(exSa(brg, osVec) - exSa(brg, tgtVec));
     }
-    return Math.abs(exSa(brg, vector) + exSa(brg, target[vectorSelect]));
+    console.log(Math.abs(exSa(brg, osVec) + exSa(brg, tgtVec)))
+    return Math.abs(exSa(brg, osVec) + exSa(brg, tgtVec));
 }
 
-function calcExpectedBrgRate(val, num) {
-    let sra = exSra()
+function calcExpectedBrgRate(val, num, osVec, tgtVec, brg) {
+    console.log(brg)
+    let sra = exSra(osVec, tgtVec, brg);
     let b = sra * (0.95 / val);
-    target[vectorSelect].exBrgR[num] = b;
-    expBrgRateReadout[num].value = b.toFixed(3);
-    calcExpectedBrgXing(b, num);
+    tgtVec.exBrgR[num] = b; 
+    return b.toFixed(3);
 }
 
-function calcExpectedBrgXing(val, num) {
-    let ts = exSa(Number(exBrgReadout.value), target[vectorSelect])
-    let os = exSa(Number(exBrgReadout.value), vector)
-    if (ts >= os && determineLeadLag(Number(exBrgReadout.value), vector, target[vectorSelect])) {
-        target[vectorSelect].exBrgX[num] = 0;
-        expBrgXingReadout[num].value = target[vectorSelect].exBrgX[num];
+function calcExpectedBrgXing(num, osVec, tgtVec, brg) {
+    let ts = exSa(brg, tgtVec);
+    let os = exSa(brg, osVec);
+    if (ts >= os && determineLeadLag(brg, osVec, tgtVec)) {
+        tgtVec.exBrgX[num] = 0;
+        return tgtVec.exBrgX[num];
     } else {
-        let x = Math.abs(vector.sa) * (0.95 / val);
-        target[vectorSelect].exBrgX[num] = x;
-        expBrgXingReadout[num].value = target[vectorSelect].exBrgX[num].toFixed(1);
+        let x = Math.abs(vector.sa) * (0.95 / tgtVec.exBrgR[num]);
+        tgtVec.exBrgX[num] = x;
+        return tgtVec.exBrgX[num].toFixed(1);
     }
 }
 

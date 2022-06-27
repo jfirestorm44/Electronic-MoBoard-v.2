@@ -110,7 +110,7 @@ class Moboard {
 let moboard = new Moboard()
 
 class Vector {
-    constructor(x, y, c, v) {
+    constructor(x, y, c, v, num) {
         this.pt1 = {
             x: canvas.width / 2,
             y: canvas.height / 2
@@ -127,6 +127,7 @@ class Vector {
         this.sa = 0;
         this.vNum = v;
         this.srm = 0;
+        this.num = num;
     }
     draw() {
         ctx.setLineDash([]);
@@ -255,16 +256,30 @@ class Target {
     draw() {
         ctx.setLineDash([]);
         ctx.strokeStyle = this.c;
-        ctx.beginPath();
-        ctx.moveTo(this.x - 12, this.y - 5)
-        ctx.lineTo(this.x, this.y + 10)
-        ctx.lineTo(this.x + 12, this.y - 5)
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(this.x, this.y)
-        ctx.lineTo(this.x + 20 * Math.cos(degreesToRadians(this.crs - 90)), this.y + 20 * Math.sin(degreesToRadians(this.crs - 90)));
-        ctx.closePath();
-        ctx.stroke();
+        if (this.rng <= 80) {
+            ctx.beginPath();
+            ctx.moveTo(this.x - 12, this.y - 5)
+            ctx.lineTo(this.x, this.y + 10)
+            ctx.lineTo(this.x + 12, this.y - 5)
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y)
+            ctx.lineTo(this.x + 20 * Math.cos(degreesToRadians(this.crs - 90)), this.y + 20 * Math.sin(degreesToRadians(this.crs - 90)));
+            ctx.stroke();
+        } else {
+            let a = degreesToRadians(this.currentBrg - 90);
+            let x = canvas.width / 2 + 400 * Math.cos(a);
+            let y = canvas.height / 2 + 400 * Math.sin(a);
+            ctx.beginPath();
+            ctx.moveTo(x - 12, y - 5)
+            ctx.lineTo(x, y + 10)
+            ctx.lineTo(x + 12, y - 5)
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y)
+            ctx.lineTo(x + 20 * Math.cos(degreesToRadians(this.crs - 90)), y + 20 * Math.sin(degreesToRadians(this.crs - 90)));
+            ctx.stroke();
+        }
     }
     update() {
         this.crs = tgtVector[vectorSelect].crs;
@@ -523,7 +538,7 @@ function drawCPA() {
     target[1].draw();
     target[2].draw();
     drawSRM();
-    drawDRM();
+    if (target[vectorSelect].rng < 80.1) drawDRM();
     if (showOS.checked) {
         vector.draw();
     }
